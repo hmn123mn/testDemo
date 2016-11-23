@@ -1,10 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
+	<title></title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body{
+			background: #666;
+		}
+		svg{
+			display: block;
+			background: #fff;
+			margin: 20px auto;
+		}
+		/*#cir1{
+			opacity: 0.6;
+		}*/
+	</style>
 </head>
 <body>
-	<h1>testDemo</h1>
+	<svg id="sv1" width="800" height="600">
+		<circle id="cir1" cx="100" cy="100" r="60" fill="rgba(0,0,255,1)"></circle>
+	</svg>
+	<script>
+
+		for(var i=0;i<8;i++){
+			var c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+			c.setAttribute('cx',Math.round(Math.random()*600));
+			c.setAttribute('cy',Math.round(Math.random()*600));
+			c.setAttribute('r',Math.round(Math.random()*100));
+			c.setAttribute('fill',color());
+			sv1.appendChild(c);
+		}
+
+		sv1.onclick = function(ev){
+			var ev = ev||event;
+			var target = ev.target||ev.srcElement;
+
+			if (target.nodeName == 'circle') {
+				dispear.call(target);
+			}
+			console.log(target.nodeName);
+		}
+
+
+		function autoMove(){
+
+			var onoff = true;
+			var i = 1;
+			var j = 1;
+			
+			var x = parseInt(this.getAttribute('cx'));
+			var y = parseInt(this.getAttribute('cy'));
+			var r = parseInt(this.getAttribute('r'));
+			var sv1W = sv1.getAttribute('width');
+			var sv1H = sv1.getAttribute('height');
+			var _this = this;
+			
+			var timer = setInterval(function(){	
+				if ((x+r)>sv1W || (y+r)>sv1H) {
+					onoff = false;
+					i = Math.round(Math.random()*6);
+					j = Math.round(Math.random()*6);
+				}
+				if(x<r || y<r ){
+					onoff = true;
+					i = Math.round(Math.random()*6);
+					j = Math.round(Math.random()*6);
+				}
+				
+				if (onoff) {
+					x = x+i;
+					y = y+j;
+				}else{
+					x = x-i;
+					y = y-j;
+				}
+				// console.log(x);
+				_this.setAttribute('cx',x);
+				_this.setAttribute('cy',y);
+			},20);
+		}
+		// autoMove.call(cir1);
+		var acir = document.getElementsByTagName('circle');
+		var len = acir.length;
+		for(var i=0;i<len;i++){
+			autoMove.call(acir[i]);
+		}
+		
+		function dispear(){
+			clearInterval(timer);
+			console.log(1);
+			var r = parseInt(this.getAttribute('r'));
+			var _this = this;
+			var op = 1;
+			var timer = setInterval(function(){
+				_this.setAttribute('r',r);
+				_this.setAttribute('style','opacity:'+op);
+				op -= 0.1;
+				r  += 5;
+				if (op<0.1) {_this.setAttribute('style','display:none');}
+			},60);
+			
+		}
+
+		function color(){
+			var r = Math.round(Math.random()*255);
+			var g = Math.round(Math.random()*255);
+			var b = Math.round(Math.random()*255);
+			return "rgb("+r+","+g+","+b+")";
+
+		}
+		
+	</script>
 </body>
 </html>
